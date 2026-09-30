@@ -1,0 +1,49 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Checkout — FreshCart Market{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Checkout</h1>
+        <p>Enter your details to complete the order</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="checkout-layout">
+            <form method="post" class="checkout-form">
+                {% csrf_token %}
+                <h3>Delivery Information</h3>
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="field-error">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary btn-full">Confirm Order</button>
+            </form>
+
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                {% for item in cart %}
+                <div class="summary-row">
+                    <span>{{ item.quantity }} × {{ item.product.name }}</span>
+                    <span>${{ item.subtotal }}</span>
+                </div>
+                {% endfor %}
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>${{ cart.total_price }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

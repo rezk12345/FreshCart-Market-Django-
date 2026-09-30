@@ -1,0 +1,68 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Shop Groceries — FreshCart Market{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Shop Groceries</h1>
+        <p>Fresh produce, pantry staples and more</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container shop-layout">
+
+        <aside class="shop-sidebar">
+            <h3>Search</h3>
+            <form method="get" class="sidebar-search">
+                <input type="text" id="liveSearch" name="q" value="{{ query }}" placeholder="Search products...">
+            </form>
+
+            <h3>Categories</h3>
+            <ul class="filter-list" id="categoryFilter">
+                <li>
+                    <a href="{% url 'store:product_list' %}" class="{% if not active_category %}active{% endif %}" data-slug="">All Products</a>
+                </li>
+                {% for category in categories %}
+                <li>
+                    <a href="?category={{ category.slug }}" class="{% if active_category == category.slug %}active{% endif %}" data-slug="{{ category.slug }}">{{ category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <div class="shop-main">
+            <div class="shop-toolbar">
+                <span id="resultsCount">{{ products|length }} product{{ products|length|pluralize }} found</span>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                {% for product in products %}
+                <div class="product-card" data-name="{{ product.name|lower }}" data-category="{{ product.category.slug }}">
+                    <a href="{% url 'store:product_detail' product.pk %}" class="product-card-img">
+                        {% if product.display_image %}
+                        <img src="{{ product.display_image }}" alt="{{ product.name }}">
+                        {% else %}
+                        <div class="img-placeholder">🥦</div>
+                        {% endif %}
+                        <span class="badge">{{ product.category.name }}</span>
+                    </a>
+                    <div class="product-card-body">
+                        <h3><a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a></h3>
+                        <div class="rating">{% for i in "12345" %}★{% endfor %} <span>({{ product.rating }})</span></div>
+                        <div class="price-row">
+                            <span class="price">${{ product.price }} <small>/ {{ product.unit }}</small></span>
+                            <button class="btn-add-cart" data-product-id="{{ product.pk }}">Add +</button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p id="emptyMessage">No products match your search. Try a different keyword.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

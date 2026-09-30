@@ -1,0 +1,36 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Order Placed — FreshCart Market{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">✔</div>
+            <h1>Thank you, {{ order.customer_name }}!</h1>
+            <p>Your order has been placed successfully.</p>
+
+            <div class="order-details">
+                <div class="summary-row">
+                    <span>Order Number</span>
+                    <span>#{{ order.pk }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Phone</span>
+                    <span>{{ order.phone }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Address</span>
+                    <span>{{ order.address }}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total Paid</span>
+                    <span>${{ order.total_price }}</span>
+                </div>
+            </div>
+
+            <a href="{% url 'store:product_list' %}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

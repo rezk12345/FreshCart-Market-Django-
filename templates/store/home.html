@@ -1,0 +1,110 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}FreshCart Market — Fresh Groceries Delivered{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container hero-inner">
+        <div class="hero-text">
+            <span class="eyebrow">Farm fresh, delivered fast</span>
+            <h1>Groceries that make<br>every meal <em>fresher</em>.</h1>
+            <p>Shop fruits, vegetables, dairy, bakery and pantry staples — all picked fresh and delivered straight to your door.</p>
+            <div class="hero-actions">
+                <a href="{% url 'store:product_list' %}" class="btn btn-primary">Shop Now</a>
+                <a href="#about" class="btn btn-ghost">Learn More</a>
+            </div>
+            <div class="hero-stats">
+                <div><strong>500+</strong><span>Fresh Products</span></div>
+                <div><strong>4.8★</strong><span>Customer Rating</span></div>
+                <div><strong>24h</strong><span>Fast Delivery</span></div>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-blob"></div>
+            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80" alt="Fresh groceries basket">
+        </div>
+    </div>
+</section>
+
+<section class="search-strip">
+    <div class="container">
+        <form action="{% url 'store:product_list' %}" method="get" class="search-strip-form">
+            <input type="text" name="q" placeholder="Search for tomatoes, milk, bread...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</section>
+
+<section class="section" id="categories">
+    <div class="container">
+        <div class="section-head">
+            <h2>Shop by Category</h2>
+            <p>Browse our fresh departments</p>
+        </div>
+        <div class="category-grid">
+            {% for category in categories %}
+            <a href="{% url 'store:product_list' %}?category={{ category.slug }}" class="category-card">
+                <span class="category-emoji">{{ category.name|slice:":1" }}</span>
+                <span>{{ category.name }}</span>
+            </a>
+            {% empty %}
+            <p>Categories will appear here once added in the admin panel.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head">
+            <h2>Featured Products</h2>
+            <p>This week's freshest picks</p>
+        </div>
+        <div class="product-grid">
+            {% for product in featured_products %}
+            <div class="product-card">
+                <a href="{% url 'store:product_detail' product.pk %}" class="product-card-img">
+                    {% if product.display_image %}
+                    <img src="{{ product.display_image }}" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="img-placeholder">🥦</div>
+                    {% endif %}
+                    <span class="badge">{{ product.category.name }}</span>
+                </a>
+                <div class="product-card-body">
+                    <h3><a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a></h3>
+                    <div class="rating">{% for i in "12345" %}★{% endfor %} <span>({{ product.rating }})</span></div>
+                    <div class="price-row">
+                        <span class="price">${{ product.price }} <small>/ {{ product.unit }}</small></span>
+                        <button class="btn-add-cart" data-product-id="{{ product.pk }}">Add +</button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No products yet — add some from the Django admin panel.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section about-section" id="about">
+    <div class="container about-inner">
+        <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=700&q=80" alt="Grocery store shelves">
+        </div>
+        <div class="about-text">
+            <span class="eyebrow">About FreshCart</span>
+            <h2>Your neighborhood supermarket, online.</h2>
+            <p>FreshCart Market sources produce daily from local farms and trusted suppliers. We believe grocery shopping should be simple, fast, and always fresh — so we built an experience that puts quality first, from our shelves to your kitchen.</p>
+            <ul class="about-list">
+                <li>✅ Same-day delivery on orders before 5 PM</li>
+                <li>✅ Quality guarantee on all fresh produce</li>
+                <li>✅ Easy returns, no questions asked</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

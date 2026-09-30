@@ -1,0 +1,78 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ product.name }} — FreshCart Market{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{% url 'store:home' %}">Home</a> /
+            <a href="{% url 'store:product_list' %}">Shop</a> /
+            <a href="{% url 'store:product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a> /
+            <span>{{ product.name }}</span>
+        </div>
+
+        <div class="detail-layout">
+            <div class="detail-image">
+                {% if product.display_image %}
+                <img src="{{ product.display_image }}" alt="{{ product.name }}">
+                {% else %}
+                <div class="img-placeholder large">🥦</div>
+                {% endif %}
+            </div>
+
+            <div class="detail-info">
+                <span class="badge">{{ product.category.name }}</span>
+                <h1>{{ product.name }}</h1>
+                <div class="rating">{% for i in "12345" %}★{% endfor %} <span>({{ product.rating }} rating)</span></div>
+                <p class="detail-price">${{ product.price }} <small>/ {{ product.unit }}</small></p>
+                <p class="detail-desc">{{ product.description }}</p>
+
+                {% if product.stock > 0 %}
+                <p class="stock in-stock">✔ In stock ({{ product.stock }} available)</p>
+                {% else %}
+                <p class="stock out-stock">✖ Out of stock</p>
+                {% endif %}
+
+                <div class="qty-selector">
+                    <button type="button" id="qtyMinus" class="qty-btn">−</button>
+                    <input type="number" id="qtyInput" value="1" min="1" max="{{ product.stock }}">
+                    <button type="button" id="qtyPlus" class="qty-btn">+</button>
+                </div>
+
+                <button class="btn btn-primary btn-full" id="addToCartBtn" data-product-id="{{ product.pk }}" {% if product.stock == 0 %}disabled{% endif %}>
+                    Add to Cart
+                </button>
+                <p class="add-confirm" id="addConfirm">Added to cart!</p>
+            </div>
+        </div>
+
+        {% if related_products %}
+        <div class="section-head" style="margin-top:60px;">
+            <h2>You might also like</h2>
+        </div>
+        <div class="product-grid">
+            {% for product in related_products %}
+            <div class="product-card">
+                <a href="{% url 'store:product_detail' product.pk %}" class="product-card-img">
+                    {% if product.display_image %}
+                    <img src="{{ product.display_image }}" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="img-placeholder">🥦</div>
+                    {% endif %}
+                    <span class="badge">{{ product.category.name }}</span>
+                </a>
+                <div class="product-card-body">
+                    <h3><a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a></h3>
+                    <div class="price-row">
+                        <span class="price">${{ product.price }}</span>
+                        <button class="btn-add-cart" data-product-id="{{ product.pk }}">Add +</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
